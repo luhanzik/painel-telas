@@ -50,7 +50,7 @@ export default function CustomCursor() {
         zIndex: 9999,
         transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
         transition: 'transform 0.1s ease-out',
-        backgroundImage: 'url("/assets/truck-cursor.png")',
+        backgroundImage: 'url("/assets/caminhao_cursor.ico")',
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         filter: 'drop-shadow(0 5px 10px rgba(0,0,0,0.5))',
