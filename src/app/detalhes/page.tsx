@@ -55,17 +55,17 @@ function DetalhesContent() {
   const columns = pedidos.length > 0 ? Object.keys(pedidos[0]) : [];
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#1a2537', minHeight: '100vh', color: 'white', fontFamily: 'sans-serif' }}>
-      <header style={{ marginBottom: '20px', borderBottom: '1px solid #334155', paddingBottom: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+    <div className="details-container">
+      <header className="details-header">
+        <div className="details-nav">
             <button 
                 onClick={() => router.push('/')}
-                style={{ padding: '10px 20px', backgroundColor: '#334155', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
+                className="details-button"
             >
                 ← VOLTAR AO DASHBOARD
             </button>
-            <h1 style={{ textTransform: 'uppercase', margin: 0, fontSize: '1.8rem' }}>Detalhes: {cd} - {tipo?.replace('_', ' ')}</h1>
-            <div style={{ width: '180px' }}></div> {/* Spacer para centralizar o título */}
+            <h1 className="details-title">Detalhes: {cd} - {tipo?.replace('_', ' ')}</h1>
+            <div style={{ width: '180px' }} className="details-spacer"></div>
         </div>
         
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px' }}>
@@ -74,40 +74,41 @@ function DetalhesContent() {
             placeholder="Filtrar por Pedido, NFE ou Remessa..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ padding: '10px', borderRadius: '5px', border: '1px solid #334155', backgroundColor: '#242f45', color: 'white', flexGrow: 1 }}
+            className="details-input"
           />
-          <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#f97316', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
+          <button type="submit" className="details-button details-button-primary">
             PESQUISAR
           </button>
         </form>
       </header>
-
-      <div style={{ overflowX: 'auto', maxHeight: '70vh', border: '1px solid #334155', borderRadius: '10px' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#242f45', fontSize: '0.85rem' }}>
-          <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f97316', zIndex: 1 }}>
+ 
+      <div className="details-table-wrapper">
+        <table className="details-table">
+          <thead>
             <tr>
               {columns.map(col => (
-                <th key={col} style={{ padding: '12px', textAlign: 'left', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{col.replace('_', ' ')}</th>
+                <th key={col}>{col.replace('_', ' ')}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {pedidos.map((p, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid #334155' }}>
+              <tr key={i}>
                 {columns.map(col => (
-                  <td key={col} style={{ padding: '10px', whiteSpace: 'nowrap' }}>{String(p[col] ?? '')}</td>
+                  <td key={col}>{String(p[col] ?? '')}</td>
                 ))}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
+ 
       {!loading && hasMore && pedidos.length >= 20 && (
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <button 
             onClick={() => setPage(p => p + 1)}
-            style={{ padding: '12px 30px', backgroundColor: '#334155', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
+            className="details-button"
+            style={{ padding: '15px 40px' }}
           >
             CARREGAR MAIS (+20)
           </button>
