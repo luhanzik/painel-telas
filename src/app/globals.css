@@ -8,6 +8,7 @@ html, body {
     height: 100vh;
     overflow: hidden;
     padding: 15px;
+    cursor: none; /* Hide default cursor */
 }
 
 .header {
