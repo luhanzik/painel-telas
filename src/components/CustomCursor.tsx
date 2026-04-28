@@ -44,8 +44,8 @@ export default function CustomCursor() {
         position: 'fixed',
         left: position.x,
         top: position.y,
-        width: '60px',
-        height: '40px',
+        width: '120px',
+        height: '80px',
         pointerEvents: 'none',
         zIndex: 9999,
         transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
@@ -53,7 +53,7 @@ export default function CustomCursor() {
         backgroundImage: 'url("/assets/caminhao_cursor.ico")',
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
-        filter: 'drop-shadow(0 5px 10px rgba(0,0,0,0.5))',
+        filter: 'drop-shadow(0 8px 15px rgba(0,0,0,0.6))',
       }}
     >
         {/* Animação de "fumaça" opcional ao correr? */}

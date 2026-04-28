@@ -8,6 +8,7 @@ function DetalhesContent() {
   const router = useRouter();
   const cd = searchParams.get('cd');
   const tipo = searchParams.get('tipo');
+  const source = searchParams.get('source') || 'hoje';
   
   const [pedidos, setPedidos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,8 @@ function DetalhesContent() {
     const currentPage = reset ? 0 : page;
     try {
       const apiHost = typeof window !== 'undefined' ? `http://${window.location.hostname}:3002` : 'http://localhost:3002';
-      const url = `${apiHost}/api/pedidos/hoje/detalhe?cd=${cd}&tipo=${tipo}&page=${currentPage}&limit=20&search=${search}`;
+      const apiRoute = source === 'vencidos' ? 'vencidos' : 'hoje';
+      const url = `${apiHost}/api/pedidos/${apiRoute}/detalhe?cd=${cd}&tipo=${tipo}&page=${currentPage}&limit=20&search=${search}`;
       const res = await fetch(url);
       const data = await res.json();
       const safeData = Array.isArray(data) ? data : [];
@@ -40,7 +42,7 @@ function DetalhesContent() {
 
   useEffect(() => {
     if (cd) fetchDetalhes(true);
-  }, [cd, tipo]);
+  }, [cd, tipo, source]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,12 +61,12 @@ function DetalhesContent() {
       <header className="details-header">
         <div className="details-nav">
             <button 
-                onClick={() => router.push('/')}
+                onClick={() => router.push(source === 'vencidos' ? '/pedidosabertos' : '/')}
                 className="details-button"
             >
                 ← VOLTAR AO DASHBOARD
             </button>
-            <h1 className="details-title">Detalhes: {cd} - {tipo?.replace('_', ' ')}</h1>
+            <h1 className="details-title">Detalhes: {cd} - {tipo?.replace('_', ' ')} ({source === 'vencidos' ? 'Abertos' : 'Hoje'})</h1>
             <div style={{ width: '180px' }} className="details-spacer"></div>
         </div>
         

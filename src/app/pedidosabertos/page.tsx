@@ -6,7 +6,7 @@ import DashboardCard from '@/components/DashboardCard';
 const FILIAIS_ORDEM = ['FORTALEZA', 'IMPERATRIZ', 'JUAZEIRO', 'SÃO LUÍS', 'SOBRAL', 'TERESINA'];
 const METRICAS_ORDEM = ['vence_hoje', 'em_rota', 'inserido', 'na_filial', 'retornos'];
 
-export default function Home() {
+export default function PedidosAbertos() {
   const [data, setData] = useState<any[]>([]);
   const dataRef = useRef<any[]>([]);
   const checksumRef = useRef<number>(0);
@@ -17,26 +17,26 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   // Estado do Scanner
-  const [scanIndex, setScanIndex] = useState(0); // 0 a (6*5 - 1) = 29
+  const [scanIndex, setScanIndex] = useState(0);
 
   const fetchData = async (isFirstLoad = false, currentScanIndex?: number) => {
     if (isFirstLoad) setLoading(true);
     setErrorMessage(null);
     
-    // Define o host da API baseado no acesso atual
     const host = typeof window !== 'undefined' ? `http://${window.location.hostname}:3002` : 'http://localhost:3002';
     setApiHost(host);
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 segundos de limite
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     try {
-      const response = await fetch(`${host}/api/pedidos/hoje/resumo`, { 
+      // Rota correta para pedidos vencidos
+      const response = await fetch(`${host}/api/pedidos/vencidos/resumo`, { 
         signal: controller.signal,
         cache: 'no-store'
       });
       clearTimeout(timeoutId);
-
+      
       if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
       
       const apiData = await response.json();
@@ -76,12 +76,15 @@ export default function Home() {
       const totalNovo = allMappedData.reduce((acc, item) => 
         acc + item.vence_hoje + item.em_rota + item.inserido + item.na_filial + item.retornos, 0);
       
+      // Se checksumRef.current for 0, é a primeira vez que carregamos nesta sessão
+      // Se ultimaCarga for '...', significa que o arquivo JSON ainda não existe
       const hasChanged = totalNovo !== checksumRef.current && checksumRef.current !== 0;
+      const isFirstWrite = checksumRef.current === 0 && ultimaCarga === '...';
       
-      if (hasChanged) {
+      if (hasChanged || isFirstWrite) {
           const agora = new Date().toLocaleString('pt-BR');
           try {
-            await fetch('/api/last-update', {
+            await fetch('/api/last-update-vencidos', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ date: agora, checksum: totalNovo })
@@ -105,11 +108,10 @@ export default function Home() {
     }
   };
 
-  // Buscar a última data e checksum gravados ao iniciar
   useEffect(() => {
     const loadLastDate = async () => {
       try {
-        const res = await fetch('/api/last-update');
+        const res = await fetch('/api/last-update-vencidos');
         const data = await res.json();
         setUltimaCarga(data.date);
         checksumRef.current = data.checksum || 0;
@@ -130,7 +132,7 @@ export default function Home() {
         fetchData(false, nextIndex); // Busca e atualiza a próxima célula
         return nextIndex;
       });
-    }, 3500); 
+    }, 3500);
     return () => clearInterval(scannerInterval);
   }, []);
 
@@ -145,8 +147,8 @@ export default function Home() {
         </div>
 
         <div className="header-center">
-          <h1>VENCE HOJE</h1>
-          <p>*QUANTIDADE DE PEDIDOS QUE A DATA DE ENTREGA ESTÁ PARA HOJE</p>
+          <h1>PEDIDOS EM ABERTOS</h1>
+          <p>*QUANTIDADE DE PEDIDOS QUE PASSARAM DA DATA DE ENTREGA PROMETIDA</p>
         </div>
 
         <div className="header-right">
@@ -176,7 +178,6 @@ export default function Home() {
           </div>
         ) : (
           data.map((item, cdIdx) => {
-            // Calcula qual métrica deste CD está ativa
             const currentCdIdx = Math.floor(scanIndex / METRICAS_ORDEM.length);
             const currentMetricIdx = scanIndex % METRICAS_ORDEM.length;
             const activeMetric = cdIdx === currentCdIdx ? METRICAS_ORDEM[currentMetricIdx] : null;
@@ -186,6 +187,8 @@ export default function Home() {
                 key={item.cd} 
                 {...item} 
                 activeMetric={activeMetric}
+                mainLabel="PEDIDOS EM ABERTO"
+                source="vencidos"
               />
             );
           })

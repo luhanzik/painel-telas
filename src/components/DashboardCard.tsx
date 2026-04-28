@@ -10,7 +10,9 @@ interface CardProps {
   inserido: number;
   na_filial: number;
   retornos: number;
-  activeMetric: string | null; // Indica qual métrica está sendo escaneada
+  activeMetric: string | null;
+  mainLabel?: string; // Novo: rótulo principal (ex: Vence Hoje ou Pedidos em Aberto)
+  source?: 'hoje' | 'vencidos'; // Novo: fonte para a rota de detalhes
 }
 
 // Sub-componente para animar o número subindo
@@ -36,15 +38,15 @@ function AnimatedNumber({ value }: { value: number }) {
   );
 }
 
-export default function DashboardCard({ cd, vence_hoje, em_rota, inserido, na_filial, retornos, activeMetric }: CardProps) {
+export default function DashboardCard({ cd, vence_hoje, em_rota, inserido, na_filial, retornos, activeMetric, mainLabel = 'Vence Hoje', source = 'hoje' }: CardProps) {
   const router = useRouter();
   
   const handleDetailClick = (tipo: string) => {
-    router.push(`/detalhes?cd=${encodeURIComponent(cd)}&tipo=${tipo}`);
+    router.push(`/detalhes?cd=${encodeURIComponent(cd)}&tipo=${tipo}&source=${source}`);
   };
 
   const metrics = [
-    { id: 'vence_hoje', label: 'Vence Hoje', value: vence_hoje, className: 'vence-hoje' },
+    { id: 'vence_hoje', label: mainLabel, value: vence_hoje, className: 'vence-hoje' },
     { id: 'em_rota', label: 'Em Rota', value: em_rota, className: '' },
     { id: 'inserido', label: 'Inserido', value: inserido, className: '' },
     { id: 'na_filial', label: 'Na Filial', value: na_filial, className: '' },
