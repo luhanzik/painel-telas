@@ -24,7 +24,7 @@ export default function Home() {
     setErrorMessage(null);
     
     // Define o host da API baseado no acesso atual
-    const host = typeof window !== 'undefined' ? `http://${window.location.hostname}:3002` : 'http://localhost:3002';
+    const host = typeof window !== 'undefined' ? `http://${window.location.hostname}:5010` : 'http://localhost:5010';
     setApiHost(host);
     
     const controller = new AbortController();

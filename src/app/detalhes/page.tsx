@@ -20,7 +20,7 @@ function DetalhesContent() {
     setLoading(true);
     const currentPage = reset ? 0 : page;
     try {
-      const apiHost = typeof window !== 'undefined' ? `http://${window.location.hostname}:3002` : 'http://localhost:3002';
+      const apiHost = typeof window !== 'undefined' ? `http://${window.location.hostname}:5010` : 'http://localhost:5010';
       const apiRoute = source === 'vencidos' ? 'vencidos' : 'hoje';
       const url = `${apiHost}/api/pedidos/${apiRoute}/detalhe?cd=${cd}&tipo=${tipo}&page=${currentPage}&limit=20&search=${search}`;
       const res = await fetch(url);

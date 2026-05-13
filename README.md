@@ -29,8 +29,35 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## 🚀 Deploy com PM2
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Para rodar o Dashboard em produção utilizando o PM2:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Build do projeto:**
+   ```bash
+   npm run build
+   ```
+
+2. **Iniciar com PM2:**
+   ```bash
+   pm2 start npm --name "dashboard-pro" -- start -- -p 5020
+   ```
+
+3. **Comandos úteis:**
+   ```bash
+   pm2 status          # Ver status
+   pm2 logs            # Ver logs
+   pm2 restart dashboard-pro
+   ```
+
+## ⚙️ Configuração do Backend
+
+O backend desta aplicação está configurado e online no seguinte endereço:
+
+- **IP:** `http://192.168.10.10`
+- **Porta:** `5010`
+- **Status:** Online
+
+> [!IMPORTANT]
+> Certifique-se de que o frontend está apontando para o IP e porta corretos nas requisições da API.
+
